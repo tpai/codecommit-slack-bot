@@ -1,0 +1,10 @@
+{
+  "name": "codecommit-slack-bot",
+  "scripts": {
+    "clean": "rm -rf node_modules/ && npm install",
+    "build": "npm run clean && zip -r ${PWD##*/}_$(date +%s).zip . -x *.git* -x *.zip"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.0"
+  }
+}
