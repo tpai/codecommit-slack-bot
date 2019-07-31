@@ -12,6 +12,7 @@ exports.handler = async (event) => {
       repositoryNames
     }
   } = event;
+  console.log(event)
   const user = getUser(callerUserArn)
   const repoName = getRepoName(repositoryNames)
   const data = await codecommit.getPullRequest({ pullRequestId }).promise()
