@@ -8,15 +8,17 @@ exports.handler = async (event) => {
       pullRequestId,
       pullRequestStatus,
       callerUserArn,
-      title
+      title,
+      repositoryNames
     }
   } = event;
   const user = getUser(callerUserArn)
+  const repoName = getRepoName(repositoryNames)
   const data = await codecommit.getPullRequest({ pullRequestId }).promise()
   const payload = {
     channel: process.env.channel,
-    username: `${user}@${process.env.repository}.pr`,
-    text: `[PR] ${title} (${pullRequestStatus}) <${getPrLink(pullRequestId)}>`,
+    username: `${user}@${repoName}`,
+    text: `[PR] ${title} (${pullRequestStatus}) <${getPrLink(repoName, pullRequestId)}>`,
     icon_emoji: ":mega:"
   };
   console.log(payload);
@@ -31,6 +33,10 @@ function getUser(arn) {
   return arn.match(/user\/(?<user>[a-zA-Z.]*)@/).groups.user;
 }
 
-function getPrLink(id) {
-  return `https://${process.env.AWS_REGION}.console.aws.amazon.com/codesuite/codecommit/repositories/${process.env.repository}/pull-requests/${id}`
+function getPrLink(repoName, id) {
+  return `https://${process.env.AWS_REGION}.console.aws.amazon.com/codesuite/codecommit/repositories/${repoName}/pull-requests/${id}`
+}
+
+function getRepoName(names) {
+  return names.slice(0, 1).join('')
 }
